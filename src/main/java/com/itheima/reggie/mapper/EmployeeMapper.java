@@ -1,6 +1,14 @@
-package com.itheima.reggie.mapper;/**
- * @description 
- * @author haoy 
+package com.itheima.reggie.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.itheima.reggie.entity.Employee;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * @author haoy
+ * @description
  * @date 2022/11/29 20:53
- */public interface EmployeeMapper {
+ */
+@Mapper
+public interface EmployeeMapper extends BaseMapper<Employee>{
 }
