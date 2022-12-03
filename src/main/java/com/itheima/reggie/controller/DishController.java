@@ -97,4 +97,20 @@ public class DishController {
         return R.success("修改成功");
     }
 
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish){
+        //查询条件---注意：应该为起售状态
+        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishLambdaQueryWrapper.eq(null!=dish.getCategoryId(),
+                Dish::getCategoryId,dish.getCategoryId());
+        //保证为起售状态
+        dishLambdaQueryWrapper.eq(Dish::getStatus,1);
+        //启用按名称搜索功能
+        dishLambdaQueryWrapper.like(null!=dish.getName(),Dish::getName,dish.getName());
+        //排序条件
+        dishLambdaQueryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(dishLambdaQueryWrapper);
+        return R.success(list);
+    }
+
 }

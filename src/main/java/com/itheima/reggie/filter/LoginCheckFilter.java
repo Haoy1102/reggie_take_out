@@ -44,7 +44,9 @@ public class LoginCheckFilter implements Filter {
                 "/front/**",
                 "/employee/login",
                 "/employee/logout",
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg",
+                "/user/login"
         };
 
 //        2、判断本次情状是否需要处理
@@ -53,22 +55,33 @@ public class LoginCheckFilter implements Filter {
             log.info("本次{}请求不需要处理",requestURI);
             chain.doFilter(request,response);
             return;
-        }else {//      4、判断登灵状态，如果己登录，则直接放行
-             if (null!=request.getSession().getAttribute("employee")){
-                 Long employeeId = (Long) request.getSession().getAttribute("employee");
-                 log.info("用户已登陆，用户id为：{}", employeeId);
-//                 long id = Thread.currentThread().getId();
-//                 log.info("当前线程：{}",id);
-                 BaseContext.setCurrentId(employeeId);
-
-                 chain.doFilter(request,response);
-                 return;
-             }else {//      5、如果未登陆则返回夫登陆结果，结合前端，返回一个输出流
-                 log.info("用户未登陆");
-                 response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
-                 return;
-             }
         }
+//      4-1、判断后台登灵状态，如果己登录，则直接放行
+        if (null!=request.getSession().getAttribute("employee")){
+            Long employeeId = (Long) request.getSession().getAttribute("employee");
+            log.info("用户已登陆，用户id为：{}", employeeId);
+//          long id = Thread.currentThread().getId();
+//          log.info("当前线程：{}",id);
+            BaseContext.setCurrentId(employeeId);
+
+            chain.doFilter(request,response);
+            return;
+        }
+//      4-2、判断前台登录状态
+        if (null!=request.getSession().getAttribute("user")){
+            Long userId = (Long) request.getSession().getAttribute("user");
+            log.info("用户已登陆，用户id为：{}", userId);
+            BaseContext.setCurrentId(userId);
+
+            chain.doFilter(request,response);
+            return;
+        }
+ //      5、如果未登陆则返回夫登陆结果，结合前端，返回一个输出流
+        log.info("用户未登陆");
+        response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
+        return;
+
+
 
     }
 
