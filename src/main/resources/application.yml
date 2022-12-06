@@ -13,6 +13,9 @@ spring:
     host: localhost
     database: 0
     port: 6379
+  cache:
+    redis:
+      time-to-live: 1800000 #设置缓存的过期时间
 
 mybatis-plus:
   configuration:
